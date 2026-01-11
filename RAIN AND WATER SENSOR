@@ -1,0 +1,71 @@
+// ================================
+// PHASE 2: Rain + Water Level
+// ESP32 | Wokwi Simulation
+// ================================
+
+// -------- PIN DEFINITIONS --------
+#define RAIN_PIN   32   // Rain sensor (potentiometer)
+#define WATER_PIN  33   // Water level sensor (potentiometer)
+
+// -------- VARIABLES --------
+int rainValue;
+int waterValue;
+
+String rainStatus;
+String waterStatus;
+
+void setup() {
+  Serial.begin(115200);
+
+  // Fix ESP32 ADC range issue
+  analogSetAttenuation(ADC_11db);
+}
+
+void loop() {
+
+  // -------- READ ANALOG VALUES --------
+  rainValue  = analogRead(RAIN_PIN);
+  waterValue = analogRead(WATER_PIN);
+
+  // -------- RAIN SENSOR LOGIC --------
+  if (rainValue < 1000) {
+    rainStatus = "No Rain";
+  } 
+  else if (rainValue < 2000) {
+    rainStatus = "Light Rain";
+  } 
+  else if (rainValue < 3200) {
+    rainStatus = "Heavy Rain";
+  } 
+  else {
+    rainStatus = "Extreme Rain";
+  }
+
+  // -------- WATER LEVEL LOGIC (CALIBRATED) --------
+  if (waterValue < 1800) {
+    waterStatus = "Low Water Level";
+  } 
+  else if (waterValue < 2300) {
+    waterStatus = "Medium Water Level";
+  } 
+  else {
+    waterStatus = "High Water Level";
+  }
+
+  // -------- SERIAL MONITOR OUTPUT --------
+  Serial.println("====== SENSOR STATUS ======");
+
+  Serial.print("Rain: ");
+  Serial.print(rainStatus);
+  Serial.print(" | Value: ");
+  Serial.println(rainValue);
+
+  Serial.print("Water Level: ");
+  Serial.print(waterStatus);
+  Serial.print(" | Value: ");
+  Serial.println(waterValue);
+
+  Serial.println("===========================\n");
+
+  delay(700);
+}
